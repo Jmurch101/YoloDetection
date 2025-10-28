@@ -1,6 +1,6 @@
 # YOLO Image Detection (Ultralytics)
 
-Simple command-line tool that runs object detection on an image or a folder of images using Ultralytics YOLOv8 and saves annotated results.
+Simple command-line tool that runs object detection on an image or a folder of images using Ultralytics YOLOv8, saves annotated results, and can export detections to CSV. Includes a lightweight Tkinter GUI.
 
 ## Quickstart
 
@@ -23,6 +23,16 @@ python detect.py --source path/to/images_dir --model yolov8s.pt --conf 0.35
 - **Outputs**: Saved under `runs/detect/pred` by default (configurable via `--output`).
 - **Models**: Use any Ultralytics YOLOv8 model like `yolov8n.pt`, `yolov8s.pt`, etc.
 - **Device**: Auto-detects by default, or set `--device cpu` or `--device 0` for first GPU.
+
+### CSV Export (CLI)
+
+Add `--csv` to write detections to a CSV file:
+
+```bash
+python detect.py --source path/to/images_dir --csv outputs/detections.csv
+```
+
+CSV columns: `image,label,confidence,x_min,y_min,x_max,y_max,width,height`
 
 ## Arguments
 
@@ -60,6 +70,19 @@ Running on a folder prints per-image summaries and saves annotated images:
   → No objects detected above threshold
 Done in 2.34s. Outputs saved under: runs/detect/pred
 ```
+
+## GUI Usage (Tkinter)
+
+Run the GUI to select a file or folder and export detections to CSV:
+
+```bash
+python gui.py
+```
+
+- Select image file or folder
+- Optionally enable "Save annotated images"
+- Choose CSV output path
+- Click "Run Detection"
 
 ## GitHub Setup
 
