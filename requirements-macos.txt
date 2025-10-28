@@ -1,0 +1,9 @@
+# Apple Silicon (M1/M2/M3) friendly constraints
+# Notes:
+# - Uses CPU wheels by default for broad compatibility
+# - For Metal (mps) acceleration, see https://pytorch.org/get-started/locally/
+
+ultralytics>=8.3.0
+torch>=2.1.0
+opencv-python>=4.8.0
+numpy>=1.24.0

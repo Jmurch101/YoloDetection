@@ -57,6 +57,12 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 Then reinstall `ultralytics` if needed.
 
+Alternatively, use the pre-curated file for macOS:
+
+```bash
+pip install -r requirements-macos.txt
+```
+
 ## Example Output
 
 Running on a folder prints per-image summaries and saves annotated images:
@@ -83,6 +89,23 @@ python gui.py
 - Optionally enable "Save annotated images"
 - Choose CSV output path
 - Click "Run Detection"
+
+## Docker
+
+Build the image and run the CLI inside a container:
+
+```bash
+# Build
+docker build -t yolo-detect .
+
+# Show help (default CMD)
+docker run --rm -it -v "$PWD:/app" yolo-detect --help
+
+# Run detection on a mounted folder and write CSV to mounted path
+docker run --rm -it -v "$PWD:/app" yolo-detect \
+  --source /app/path/to/images \
+  --csv /app/outputs/detections.csv
+```
 
 ## GitHub Setup
 
