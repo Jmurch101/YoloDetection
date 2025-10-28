@@ -31,3 +31,13 @@ dist/
 *.spec
 
 
+
+# build/venv/artifacts
+.venv/
+build/
+dist/
+runs/
+outputs/
+*.spec
+# weights
+*.pt
