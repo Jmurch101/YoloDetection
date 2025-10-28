@@ -18,6 +18,9 @@ python detect.py --source path/to/image.jpg
 
 # 4) Or run on a directory of images
 python detect.py --source path/to/images_dir --model yolov8s.pt --conf 0.35
+
+# 5) Run detection on a video file (annotated video output)
+python detect.py --source path/to/video.mp4
 ```
 
 - **Outputs**: Saved under `runs/detect/pred` by default (configurable via `--output`).
@@ -106,6 +109,20 @@ docker run --rm -it -v "$PWD:/app" yolo-detect \
   --source /app/path/to/images \
   --csv /app/outputs/detections.csv
 ```
+
+## Build a macOS App (PyInstaller)
+
+Create a standalone app for macOS users:
+
+```bash
+chmod +x build-macos.sh
+./build-macos.sh
+# Output in ./dist (one-file binary by default)
+```
+
+Notes:
+- If Gatekeeper blocks the app, you may need to allow it in System Settings → Privacy & Security.
+- For distribution outside your machine, consider code-signing and notarization. See Apple docs on Developer ID signing.
 
 ## GitHub Setup
 

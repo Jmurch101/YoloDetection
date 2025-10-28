@@ -32,6 +32,11 @@ def _list_images(path: Path) -> List[Path]:
     return sorted([p for p in path.rglob("*") if p.suffix.lower() in image_exts])
 
 
+def _is_video(path: Path) -> bool:
+    video_exts = {".mp4", ".avi", ".mov", ".mkv", ".webm"}
+    return path.is_file() and path.suffix.lower() in video_exts
+
+
 def collect_detections(
     source: Path,
     model_name: str = "yolov8n.pt",
@@ -64,6 +69,10 @@ def collect_detections(
 
     if save_images and output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Only images are supported here
+    if source.is_file() and _is_video(source):
+        raise ValueError("collect_detections is for images only; use process_video for videos")
 
     images = _list_images(source)
     if not images:
@@ -116,6 +125,47 @@ def collect_detections(
     return rows
 
 
+def process_video(
+    source: Path,
+    output_dir: Path,
+    model_name: str = "yolov8n.pt",
+    conf: float = 0.25,
+    device: str = "",
+) -> Path:
+    """
+    Run YOLO on a single video file and save annotated video under output_dir.
+    Returns the directory where outputs are saved.
+    """
+    try:
+        from ultralytics import YOLO  # type: ignore
+    except Exception:
+        print(
+            "Failed to import ultralytics. Did you install requirements?\n"
+            "Try: pip install -r requirements.txt",
+            file=sys.stderr,
+        )
+        raise
+
+    if not source.is_file():
+        raise FileNotFoundError(f"Video file not found: {source}")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    model = YOLO(model_name)
+    _ = model(
+        str(source),
+        conf=conf,
+        device=device if device else None,
+        verbose=False,
+        save=True,
+        project=str(output_dir),
+        name="pred",
+        exist_ok=True,
+    )
+
+    return output_dir / "pred"
+
+
 def write_csv(detections: List[Dict[str, Any]], csv_path: Path) -> None:
     """Write detections to CSV at `csv_path`."""
     csv_path.parent.mkdir(parents=True, exist_ok=True)
@@ -148,6 +198,22 @@ def run_detection(
     """
     CLI entry: run detection, save annotated images, print summary, optional CSV.
     """
+    if source.is_file() and _is_video(source):
+        print(f"Running video detection on: {source.name} using {model_name}…")
+        t0 = time.time()
+        out_dir = process_video(
+            source=source,
+            output_dir=output_dir,
+            model_name=model_name,
+            conf=conf,
+            device=device,
+        )
+        dt = time.time() - t0
+        print(f"Done in {dt:.2f}s. Annotated video saved under: {out_dir}")
+        if csv_path is not None:
+            print("Note: CSV export is only produced for image inputs.")
+        return
+
     images = _list_images(source)
     if not images:
         print(f"No images found at: {source}")
@@ -195,12 +261,12 @@ def run_detection(
 
 
 def parse_args(argv: Iterable[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="YOLO object detection on images")
+    parser = argparse.ArgumentParser(description="YOLO object detection on images or video")
     parser.add_argument(
         "--source",
         type=Path,
         required=True,
-        help="Path to an image file or a directory of images",
+        help="Path to an image/video file or a directory of images",
     )
     parser.add_argument(
         "--model",

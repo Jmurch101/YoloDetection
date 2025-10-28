@@ -14,13 +14,13 @@ from tkinter import filedialog, messagebox
 from pathlib import Path
 from typing import Optional
 
-from detect import collect_detections, write_csv
+from detect import collect_detections, write_csv, process_video
 
 
 class YoloGui(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("YOLO Image Detection → CSV")
+        self.title("YOLO Detection (Images/Video) → CSV for images")
         self.geometry("640x360")
 
         # State
@@ -85,7 +85,14 @@ class YoloGui(tk.Tk):
         self.txt_log.see("end")
 
     def _choose_file(self) -> None:
-        path = filedialog.askopenfilename(title="Select image file")
+        path = filedialog.askopenfilename(
+            title="Select image or video file",
+            filetypes=[
+                ("Images", "*.jpg *.jpeg *.png *.bmp *.tif *.tiff *.webp"),
+                ("Videos", "*.mp4 *.avi *.mov *.mkv *.webm"),
+                ("All files", "*.*"),
+            ],
+        )
         if path:
             self.source_path = Path(path)
             self.lbl_source.config(text=str(self.source_path))
@@ -126,6 +133,21 @@ class YoloGui(tk.Tk):
                 return
 
             self._log(f"Running detection on: {self.source_path}")
+
+            # Decide image(s) vs video by extension
+            video_exts = {".mp4", ".avi", ".mov", ".mkv", ".webm"}
+            if self.source_path.is_file() and self.source_path.suffix.lower() in video_exts:
+                out_dir = process_video(
+                    source=self.source_path,
+                    output_dir=self.output_dir,
+                    model_name=model or "yolov8n.pt",
+                    conf=conf,
+                    device=device,
+                )
+                self._log(f"Annotated video saved under: {out_dir}")
+                messagebox.showinfo("Completed", f"Annotated video saved under: {out_dir}")
+                return
+
             detections = collect_detections(
                 source=self.source_path,
                 model_name=model or "yolov8n.pt",

@@ -25,4 +25,9 @@ outputs/
 # Logs
 *.log
 
+# Build artifacts
+build/
+dist/
+*.spec
+
 
