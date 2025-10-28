@@ -110,9 +110,9 @@ docker run --rm -it -v "$PWD:/app" yolo-detect \
   --csv /app/outputs/detections.csv
 ```
 
-## Build a macOS App (PyInstaller)
+## Build Apps (PyInstaller)
 
-Create a standalone app for macOS users:
+macOS:
 
 ```bash
 chmod +x build-macos.sh
@@ -123,6 +123,23 @@ chmod +x build-macos.sh
 Notes:
 - If Gatekeeper blocks the app, you may need to allow it in System Settings → Privacy & Security.
 - For distribution outside your machine, consider code-signing and notarization. See Apple docs on Developer ID signing.
+
+Windows:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-windows.ps1
+# Output in .\dist
+```
+
+Linux:
+
+```bash
+chmod +x build-linux.sh
+./build-linux.sh
+# Output in ./dist
+```
+
+CI (GitHub Actions): on push to `main`, the workflow at `.github/workflows/build.yml` builds artifacts for macOS, Windows, and Linux and uploads them as build artifacts.
 
 ## GitHub Setup
 

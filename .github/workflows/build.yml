@@ -1,0 +1,49 @@
+name: Build GUI binaries (PyInstaller)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Build (macOS)
+        if: startsWith(runner.os, 'macOS')
+        run: |
+          chmod +x build-macos.sh
+          ./build-macos.sh
+
+      - name: Build (Linux)
+        if: startsWith(runner.os, 'Linux')
+        run: |
+          chmod +x build-linux.sh
+          ./build-linux.sh
+
+      - name: Build (Windows)
+        if: startsWith(runner.os, 'Windows')
+        run: |
+          powershell -ExecutionPolicy Bypass -File .\build-windows.ps1
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}-dist
+          path: dist/**
