@@ -3,11 +3,13 @@ set -euo pipefail
 
 # Build a standalone macOS GUI app bundle using PyInstaller
 # Usage:
-#   ./build-macos.sh           # builds default one-file app
+#   ./build-macos.sh           # builds .app bundle
 #   ./build-macos.sh clean     # remove dist/build
 
 APP_NAME="YoloDetection"
 ENTRY="gui_qt.py"
+# Prefer Python 3.11 for PyInstaller stability
+PY=${PY:-python3.11}
 ICON=""
 
 cd "$(dirname "$0")"
@@ -18,7 +20,7 @@ if [[ "${1:-}" == "clean" ]]; then
 	exit 0
 fi
 
-python3 -m venv .venv
+$PY -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt -r requirements-dev.txt
@@ -30,14 +32,12 @@ pip install -r requirements.txt -r requirements-dev.txt
 # --add-data if you need to include extra files
 
 pyinstaller \
-	--windowed \
-	--name "${APP_NAME}" \
-	--onefile \
-	${ICON:+--icon "$ICON"} \
-	"${ENTRY}"
+    --windowed \
+    --name "${APP_NAME}" \
+    ${ICON:+--icon "$ICON"} \
+    "${ENTRY}"
 
 # Dist output hints
-# - One-file output will be dist/YoloDetection (Mach-O executable)
-# - If you drop --onefile, you'll get dist/YoloDetection.app which users can double-click
+# - Output will be dist/YoloDetection.app which users can double-click
 
 echo "Build complete. See ./dist"
