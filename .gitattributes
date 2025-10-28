@@ -1,0 +1,10 @@
+# Normalize line endings
+* text=auto
+
+# Treat shell scripts as text with LF
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+
+# Keep Windows PS1 with CRLF
+*.ps1 text eol=crlf

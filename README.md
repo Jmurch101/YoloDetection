@@ -80,9 +80,9 @@ Running on a folder prints per-image summaries and saves annotated images:
 Done in 2.34s. Outputs saved under: runs/detect/pred
 ```
 
-## GUI Usage (PyQt6)
+## GUIs
 
-Run the PyQt GUI (recommended):
+PyQt6 GUI (recommended aesthetics):
 
 ```bash
 python gui_qt.py
@@ -92,6 +92,12 @@ python gui_qt.py
 - Optionally enable "Save annotated images"
 - Choose CSV output path (images only)
 - Click "Run Detection"
+
+Tkinter GUI (lightweight alternative):
+
+```bash
+python gui.py
+```
 
 ## Docker
 
