@@ -10,7 +10,7 @@ $ErrorActionPreference = "Stop"
 #   powershell -ExecutionPolicy Bypass -File .\build-windows.ps1 -Clean
 
 $APP_NAME = "YoloDetection"
-$ENTRY = "gui.py"
+$ENTRY = "gui_qt.py"
 
 Set-Location $PSScriptRoot
 

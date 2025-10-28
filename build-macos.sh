@@ -7,7 +7,7 @@ set -euo pipefail
 #   ./build-macos.sh clean     # remove dist/build
 
 APP_NAME="YoloDetection"
-ENTRY="gui.py"
+ENTRY="gui_qt.py"
 ICON=""
 
 cd "$(dirname "$0")"

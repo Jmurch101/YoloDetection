@@ -80,17 +80,17 @@ Running on a folder prints per-image summaries and saves annotated images:
 Done in 2.34s. Outputs saved under: runs/detect/pred
 ```
 
-## GUI Usage (Tkinter)
+## GUI Usage (PyQt6)
 
-Run the GUI to select a file or folder and export detections to CSV:
+Run the PyQt GUI (recommended):
 
 ```bash
-python gui.py
+python gui_qt.py
 ```
 
-- Select image file or folder
+- Select image file or folder (videos supported)
 - Optionally enable "Save annotated images"
-- Choose CSV output path
+- Choose CSV output path (images only)
 - Click "Run Detection"
 
 ## Docker

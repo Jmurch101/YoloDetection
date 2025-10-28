@@ -7,7 +7,7 @@ set -euo pipefail
 #   ./build-linux.sh clean     # remove dist/build
 
 APP_NAME="YoloDetection"
-ENTRY="gui.py"
+ENTRY="gui_qt.py"
 
 cd "$(dirname "$0")"
 
